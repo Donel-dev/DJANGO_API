@@ -13,7 +13,7 @@ def product_api_view(request):
         products = Product.objects.all()
         # data = [{'id': product.id, 'name': product.name, 'price': product.price, 'description': product.description} for product in products]
         #à la place de faire la serialisation manuellement on peut utiliser un serializer pour faire le travail à notre place
-        serializer = ProductSerializer1(products, many=True)
+        serializer = ProductSerializer2(products, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     if request.method == 'POST':
