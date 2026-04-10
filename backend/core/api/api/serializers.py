@@ -7,7 +7,7 @@ class ProductSerializer1(serializers.ModelSerializer):
         model = Product
         #La serialisation et la deserialisation vont se faire sur tout les champs du model
         fields = '__all__'
-        read_only_fields = ['created_at', 'updated_at']
+        read_only_fields = ['created_at', 'updated_at']#Ces champs ne seront pas pris en compte lors de la deserialisation, ils seront juste utilser pour la serialisation 
 
 
 #Dans ce cas ci on ne tient pas compte du model et on va juste definir les champs que l'on veut serialiser et deserialiser

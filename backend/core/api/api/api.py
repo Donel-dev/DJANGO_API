@@ -16,6 +16,7 @@ def product_api_view(request):
         serializer = ProductSerializer2(products, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+    #On cree un produit
     if request.method == 'POST':
         # data = request.data
         # name = data.get('name')
