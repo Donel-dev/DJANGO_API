@@ -44,8 +44,3 @@ def home(request):
 
 
 
-
-
-
-
-
