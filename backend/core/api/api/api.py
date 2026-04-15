@@ -1,5 +1,3 @@
-from matplotlib.pylab import product
-
 from api.models import Product
 from rest_framework.response import Response
 from rest_framework.decorators import api_view

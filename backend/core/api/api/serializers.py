@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 
 class ProductSerializer1(serializers.ModelSerializer):
+    email = serializers.EmailField()#On peut ajouter des champs qui ne sont pas dans le model, mais qui seront pris en compte lors de la serialisation et de la deserialisation
     class Meta:
         model = Product
         #La serialisation et la deserialisation vont se faire sur tout les champs du model
