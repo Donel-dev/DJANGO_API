@@ -4,7 +4,7 @@ endpoint = "http://localhost:8000/api/product/8/"
 
 data = {
     'name': "PC_Gamer",
-    'price': 2500000,
+    'price': 3000000,
     'description': "electronique",
     'email' : "donel@example.com"
 }
