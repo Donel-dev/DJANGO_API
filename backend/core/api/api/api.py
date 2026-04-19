@@ -22,9 +22,11 @@ def product_api_view(request, pk=None, *args, **kwargs):
             serializer = ProductSerializer1(product)
             return Response(serializer.data, status=status.HTTP_200_OK)
         products = Product.objects.all()
+        context = {'request': request} #On peut aussi passer le contexte de la requete au serializer pour que le serializer puisse construire les liens vers les detail view de l'instance du model, on fait cela en passant le contexte de la requete au serializer, et en utilisant HyperlinkedIdentityField dans le serializer pour construire les liens vers les detail view de l'instance du model
+
         # data = [{'id': product.id, 'name': product.name, 'price': product.price, 'description': product.description} for product in products]
         #à la place de faire la serialisation manuellement on peut utiliser un serializer pour faire le travail à notre place
-        serializer = ProductSerializer2(products, many=True)
+        serializer = ProductSerializer1(products, many=True, context=context)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     #On cree un produit
