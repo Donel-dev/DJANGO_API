@@ -29,16 +29,16 @@ def product_api_view(request, pk=None, *args, **kwargs):
     
     #On cree un produit
     if request.method == 'POST':
-        data = request.data #On recupere les données pour la validation
-        name = data.get('name') #On recupere precisement le nom pour la validation
+        # data = request.data #On recupere les données pour la validation
+        # name = data.get('name') #On recupere precisement le nom pour la validation
         # price = data.get('price')
         # description = data.get('description')
         # product = Product.objects.create(name=name, price=price, description=description)
         # return Response({'id': product.id, 'name': product.name, 'price': product.price, 'description': product.description}, status=status.HTTP_201_CREATED)
         
         #à la place de faire la deserialisation manuellement on peut utiliser un serializer pour faire le travail à notre place
-        if name in ['Mangue', 'Ananas', 'Citron', 'Orange']:#On verifie si le nom est compris entre cette liste de noms
-            return Response({'message':'Only electronic categorical'}, status=status.HTTP_401_UNAUTHORIZED)
+        # if name in ['Mangue', 'Ananas', 'Citron', 'Orange']:#On verifie si le nom est compris entre cette liste de noms
+        #     return Response({'message':'Only electronic categorical'}, status=status.HTTP_401_UNAUTHORIZED)
         serializer = ProductSerializer1(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()

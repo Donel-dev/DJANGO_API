@@ -5,12 +5,18 @@ from rest_framework import serializers
 class ProductSerializer1(serializers.ModelSerializer):
     email = serializers.EmailField(write_only=True)#On peut ajouter des champs qui ne sont pas dans le model, mais qui seront pris en compte lors de la serialisation et de la deserialisation
     #Le champ email ne sera pas pris en compte lors de la serialisation (lorsqu'on va convertir l'instance du model en json), mais il sera pris en compte lors de la deserialisation (lorsqu'on va convertir le json en instance du model)c'est pour cela qu'on utilise write_only=True
+    name = serializers.CharField(max_length=255)
     class Meta:
         model = Product
         #La serialisation et la deserialisation vont se faire sur tout les champs du model
         fields = '__all__'
         read_only_fields = ['created_at', 'updated_at']#Ces champs ne seront pas pris en compte lors de la deserialisation; ils seront juste utilser pour la serialisation 
 
+    def validate_name(self, value): #validate_<field_name> pour valider un champ en particulier or dans django forms c'etait clean_<field_name>
+        if value in ['Mangue', 'Ananas', 'Citron', 'Orange']:#On verifie si le nom est compris entre cette liste de noms
+            raise serializers.ValidationError('Only electronic categorical')
+        return value #Si le nom est valide, on le retourne pour qu'il soit pris en compte dans la deserialisation
+    
     def create(self, validated_data):
         email = validated_data.pop('email')#On peut recuperer les champs qui ne sont pas dans le model et les utiliser pour faire des operations avant de creer l'instance du model
         print(f"Email: {email}")
