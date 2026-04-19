@@ -16,7 +16,7 @@ def product_api_view(request, pk=None, *args, **kwargs):
 
     if request.method == 'GET':
         if pk is not None:
-            product = get_object_or_404(Product, pk=pk)
+            product = get_object_or_404(Product, pk=pk)#Si le produit n'existe pas on renvoie une erreur 404
             # data = {'id': product.id, 'name': product.name, 'price': product.price, 'description': product.description}
             #à la place de faire la serialisation manuellement on peut utiliser un serializer pour faire le travail à notre place
             serializer = ProductSerializer1(product)
@@ -29,14 +29,16 @@ def product_api_view(request, pk=None, *args, **kwargs):
     
     #On cree un produit
     if request.method == 'POST':
-        # data = request.data
-        # name = data.get('name')
+        data = request.data #On recupere les données pour la validation
+        name = data.get('name') #On recupere precisement le nom pour la validation
         # price = data.get('price')
         # description = data.get('description')
         # product = Product.objects.create(name=name, price=price, description=description)
         # return Response({'id': product.id, 'name': product.name, 'price': product.price, 'description': product.description}, status=status.HTTP_201_CREATED)
         
         #à la place de faire la deserialisation manuellement on peut utiliser un serializer pour faire le travail à notre place
+        if name in ['Mangue', 'Ananas', 'Citron', 'Orange']:#On verifie si le nom est compris entre cette liste de noms
+            return Response({'message':'Only electronic categorical'}, status=status.HTTP_401_UNAUTHORIZED)
         serializer = ProductSerializer1(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -46,7 +48,7 @@ def product_api_view(request, pk=None, *args, **kwargs):
     if request.method == 'PUT':
         if pk is None:
             return Response({'message': 'You must provide a pk'}, status=status.HTTP_400_BAD_REQUEST)    
-        product = Product.objects.get(pk=pk)
+        product = get_object_or_404(Product, pk=pk)
         serializer = ProductSerializer1(product, data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
