@@ -5,10 +5,10 @@ from rest_framework import serializers
 class ProductSerializer1(serializers.ModelSerializer):
     email = serializers.EmailField(write_only=True)#On peut ajouter des champs qui ne sont pas dans le model, mais qui seront pris en compte lors de la serialisation et de la deserialisation
     #Le champ email ne sera pas pris en compte lors de la serialisation (lorsqu'on va convertir l'instance du model en json), mais il sera pris en compte lors de la deserialisation (lorsqu'on va convertir le json en instance du model)c'est pour cela qu'on utilise write_only=True
-    name = serializers.CharField(max_length=255)
+    name = serializers.CharField(max_length=255) #On peut aussi redéfinir les champs du model dans le serializer pour ajouter des validations ou des options supplémentaires, par exemple ici on redéfinit le champ name pour ajouter une validation personnalisée dans la méthode validate_name, et on redéfinit le champ description pour ajouter une validation personnalisée dans la méthode validate_description
     price_in_euros = serializers.SerializerMethodField()#On peut aussi definir des champs qui ne sont pas dans le model, mais qui seront calculés à partir des champs du model, et ces champs seront pris en compte lors de la serialisation et de la deserialisation
     #description = serializers.CharField(max_length=500, source='get_description')#On peut aussi definir des champs qui ne sont pas dans le model, mais qui seront calculés à partir des champs du model, et ces champs seront pris en compte lors de la serialisation et de la deserialisation; on utilise source pour indiquer la méthode du model qui va calculer la valeur de ce champ
-    description_in_euros = serializers.SerializerMethodField()
+    description_in_euros = serializers.SerializerMethodField() #On peut aussi definir des champs qui ne sont pas dans le model, mais qui seront calculés à partir des champs du model, et ces champs seront pris en compte lors de la serialisation et de la deserialisation
     #detail_link = serializers.HyperlinkedIdentityField(view_name='product-detail')#On peut aussi definir des champs qui ne sont pas dans le model, mais qui seront calculés à partir des champs du model, et ces champs seront pris en compte lors de la serialisation et de la deserialisation; on utilise HyperlinkedIdentityField pour creer un lien vers la detail view de l'instance du model
     #detail_link = serializers.SerializerMethodField() #MethodField pour creer un champ qui va calculer sa valeur à partir d'une méthode du serializer, on doit definir une methode get_<field_name> pour calculer la valeur de ce champ
     #detail_link = serializers.CharField(source='get_absolute_url')#On peut aussi definir des champs qui ne sont pas dans le model, mais qui seront calculés à partir des champs du model, et ces champs seront pris en compte lors de la serialisation et de la deserialisation; on utilise source pour indiquer la méthode du model qui va calculer la valeur de ce champ
@@ -32,10 +32,10 @@ class ProductSerializer1(serializers.ModelSerializer):
             raise serializers.ValidationError('Only electronic categorical')
         return value #Si le nom est valide, on le retourne pour qu'il soit pris en compte dans la deserialisation
     
-    def create(self, validated_data):
+    def create(self, validated_data): #On peut aussi faire des operations sur les données validées avant de creer l'instance du model, pour cela on doit faire une surcharge de la méthode create du serializer pour faire le travail à notre place
         email = validated_data.pop('email')#On peut recuperer les champs qui ne sont pas dans le model et les utiliser pour faire des operations avant de creer l'instance du model
         print(f"Email: {email}")
-        return super().create(validated_data)
+        return super().create(validated_data) #suoper() pour appeler la méthode create du serializer parent (ModelSerializer) pour faire le travail de creer l'instance du model à partir des données validées
         
 
 #Dans ce cas ci on ne tient pas compte du model et on va juste definir les champs que l'on veut serialiser et deserialiser
@@ -47,5 +47,5 @@ class ProductSerializer2(serializers.Serializer):
     description = serializers.CharField(max_length=500)
 
 #Comme on n'utilise pas un model serializer, on doit definir la méthode create pour pouvoir creer une instance du model à partir des données validées
-    def create(self, validated_data):
-        return Product.objects.create(**validated_data)
+    def create(self, validated_data): #On peut aussi faire des operations sur les données validées avant de creer l'instance du model, pour cela on doit faire une surcharge de la méthode create du serializer pour faire le travail à notre place
+        return Product.objects.create(**validated_data) #On utilise les données validées pour creer une instance du model, validated_data est un dictionnaire qui contient les données validées, et on utilise l'opérateur ** pour unpacker ce dictionnaire et passer les données comme arguments à la méthode create du model
