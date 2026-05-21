@@ -45,6 +45,15 @@ INSTALLED_APPS = [
     'api',
 ]
 
+REST_FRAMEWORK = { # cette section de code est utilisée pour configurer les paramètres de Django REST Framework dans l'application Django. En particulier, la clé 'DEFAULT_PARSER_CLASSES' spécifie les classes de parsers par défaut que Django REST Framework utilisera pour analyser les données entrantes dans les requêtes HTTP. Dans ce cas, la configuration indique que le parser par défaut est 'rest_framework.parsers.JSONParser', ce qui signifie que lorsque l'application reçoit des données au format JSON, elle utilisera ce parser pour les analyser et les convertir en objets Python utilisables dans les vues et les sérialiseurs. En résumé, cette configuration indique que l'application attend des données au format JSON pour les requêtes entrantes. parser signifie que l'application peut traiter les données entrantes dans les requêtes HTTP, et JSONParser est un parser spécifique qui gère les données au format JSON.
+    'DEFAULT_PARSER_CLASSES':[
+        'rest_framework.parsers.JSONParser', #cette ligne de code spécifie que le parser par défaut pour les requêtes entrantes dans l'application Django REST Framework est le JSONParser. Cela signifie que lorsque l'application reçoit des données au format JSON, elle utilisera ce parser pour les analyser et les convertir en objets Python utilisables dans les vues et les sérialiseurs. En résumé, cette configuration indique que l'application attend des données au format JSON pour les requêtes entrantes.
+        'rest_framework.parsers.FormParser', #cette ligne de code spécifie que le parser FormParser est également inclus dans la liste des parsers par défaut pour les requêtes entrantes dans l'application Django REST Framework. Le FormParser est utilisé pour analyser les données envoyées via des formulaires HTML, généralement avec le type de contenu "application/x-www-form-urlencoded". En incluant ce parser, l'application peut traiter à la fois les données au format JSON et les données envoyées via des formulaires HTML, offrant ainsi une plus grande flexibilité dans la manière dont les clients peuvent interagir avec l'API.
+        'rest_framework.renderers.BrowsableAPIRenderer', #cette ligne de code spécifie que le renderer par défaut pour les réponses sortantes dans l'application Django REST Framework est le BrowsableAPIRenderer. Le BrowsableAPIRenderer est un renderer qui génère une interface utilisateur conviviale pour les API, permettant aux développeurs et aux utilisateurs de naviguer facilement à travers les points de terminaison de l'API, d'explorer les données et de tester les requêtes directement depuis le navigateur. En incluant ce renderer, l'application offre une expérience utilisateur améliorée lors de l'interaction avec l'API via un navigateur web.
+        
+    ]
+}
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

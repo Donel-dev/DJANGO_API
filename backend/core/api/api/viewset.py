@@ -4,8 +4,19 @@ from rest_framework import status
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.response import Response
 from api.api.serializers import ProductSerializer1, ProductSerializer2
+from rest_framework.decorators import action
 
+class ProductViewSet(ModelViewSet): # Par ici on utilise ModelViewSet pour les opérations CRUD (Create, Read, Update, Delete) sur les produits. Cela signifie que cette vue gère toutes les opérations de base pour les produits, y compris la création, la lecture, la mise à jour et la suppression.
+    serializer_class = ProductSerializer1 #cette ligne de code spécifie que la classe de sérialiseur utilisée pour cette vue est ProductSerializer1. Le sérialiseur est responsable de convertir les instances de modèle en formats de données appropriés (comme JSON) et vice versa. En définissant serializer_class, nous indiquons à la vue quel sérialiseur utiliser pour traiter les données des produits.
+    queryset = Product.objects.all() #cette ligne de code
 
-class ProductViewSet(ModelViewSet): 
-    serializer_class = ProductSerializer1 
-    queryset = Product.objects.all() 
+    #route pour les produits avec un prix superieur à 12000
+    @action(detail=False, methods=['GET'], url_path = 'expensive-products', url_name='expensive_products') # Cette ligne de code utilise le décorateur @action pour définir une action personnalisée dans la vue basée sur un ensemble de vues (viewset). L'argument detail=False indique que cette action ne concerne pas un objet spécifique, mais plutôt une collection d'objets. L'argument methods=['GET'] spécifie que cette action répondra aux requêtes HTTP GET. url_path sert à définir le chemin de l'URL pour cette action personnalisée, tandis que url_name est utilisé pour nommer cette action, ce qui facilite son utilisation dans d'autres parties de l'application.
+    def expensive_products(self, request, *args, **kwargs): #cette ligne de code définit une méthode appelée expensive_products dans la classe ProductViewSet. Cette méthode est conçue pour gérer les requêtes GET envoyées à l'URL associée à cette action personnalisée. Elle prend en paramètre la requête (request) ainsi que d'autres arguments et mots-clés supplémentaires.
+        products = Product.objects.filter(price__gte=2600000) #cette ligne de code utilise le gestionnaire d'objets de Django pour filtrer les produits dans la base de données. Elle récupère tous les produits dont le prix est supérieur ou égal à 10 000 en utilisant la syntaxe price__gte=10000, où __gte signifie "greater than or equal to" (supérieur ou égal à).
+        context = {'request': request} #cette ligne de code crée un dictionnaire de contexte qui contient la requête actuelle (request). Ce contexte peut être utilisé pour fournir des informations supplémentaires lors de la sérialisation des données, par exemple pour construire des URL complètes ou pour accéder à d'autres informations liées à la requête.
+        serialiser = ProductSerializer1(products, many=True, context=context) #cette ligne de code crée une instance du sérialiseur ProductSerializer1 en passant les produits filtrés (products) comme données à sérialiser. L'argument many=True indique que nous avons affaire à une liste de produits, et le contexte est également fourni pour permettre au sérialiseur d'accéder à des informations supplémentaires lors de la sérialisation.
+        return Response(serialiser.data, status=status.HTTP_200_OK) #cette ligne de code retourne une réponse HTTP avec les données sérialisées des produits filtrés. La méthode Response est utilisée pour construire la réponse, et les données sérialisées sont accessibles via serialiser.data. Le statut HTTP 200 OK indique que la requête a été traitée avec succès et que les données sont renvoyées dans la réponse.
+
+# En utilisant expensive_products, les clients de l'API peuvent envoyer une requête GET à l'URL associée à cette action personnalisée pour obtenir une liste de produits dont le prix est supérieur ou égal à 10 000. La réponse contiendra les données sérialisées des produits correspondants, ce qui permet aux clients d'accéder facilement à ces informations via l'API.   
+#Quand on fait http://localhost:8000/api/v1/product/expensive-products/, on obtient la liste des produits dont le prix est supérieur ou égal à 10 000.
